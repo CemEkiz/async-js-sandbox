@@ -25,5 +25,30 @@ const renderError = function (msg) {
 
 /* Write the async code here */
 
+console.log('First');
+
+const getCountryData = async function (country) {
+	try {
+		// Country 1
+		const resCountry = await fetch(`https://restcountries.com/v2/name/${country}`);
+		if (!resCountry.ok) throw new Error(`Country not found (${response.status})`);
+		const dataCountry = await resCountry.json();
+		renderCountry(dataCountry[0]);
+
+		// Country 2
+		const neighbour = await dataCountry[0].borders?.[0];
+		if (!neighbour) return;
+		const resNeighbour = await fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+		if (!resNeighbour.ok) throw new Error(`Neighbour not found (${response.status})`);
+		const dataNeighbour = await resNeighbour.json();
+		renderCountry(dataNeighbour, 'neighbour');
+	} catch (err) {
+		console.error(`💥ERROR : ${err}`);
+		renderError(`💥ERROR : Something went wrong : ${err.message}`);
+	}
+};
+
 // Saisir le pays à afficher dans l'UI (en anglais)
 getCountryData('France');
+
+console.log('Last');
